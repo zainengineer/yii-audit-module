@@ -63,5 +63,36 @@ class AuditHelper
         }
         return $isAdmin;
     }
+    public static function modifyErrorEvent(AuditErrorHandler $oErrorInstance, CEvent $oErrorEvent)
+    {
+        if ($oErrorInstance->phpStormRemote && !empty($oErrorEvent->file) && !empty($oErrorEvent->line)){
+            $oErrorEvent->file = self::phpStormFriendly($oErrorEvent->file, $oErrorEvent->line);
+        }
+    }
+
+    /**
+     * To use it you need to overwrite the view
+     * from framework/views/exception.php
+     * to app/views/system/exception.php
+     *
+     * And then make sure link is not html escaped
+     *
+     * @param $vFileName
+     * @param $line
+     * @return mixed|string
+     */
+    public static function phpStormFriendly($vFileName, $line)
+    {
+        $vFileName = self::getBaseName($vFileName);
+        $vFileName =  "<a href='http://localhost:8091/?message=$vFileName:$line'>$vFileName:$line</a>";
+        return $vFileName;
+    }
+    public static function getBaseName($vFileName)
+    {
+        if (isset($_SERVER ['SCRIPT_FILENAME'])) {
+            $vFileName = str_replace( dirname(dirname($_SERVER ['SCRIPT_FILENAME'])) . '/', '', $vFileName);
+        }
+        return $vFileName;
+    }
 
 }

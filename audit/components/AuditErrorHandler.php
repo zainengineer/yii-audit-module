@@ -25,7 +25,8 @@ class AuditErrorHandler extends CErrorHandler
 {
 
     /**
-     * @var bool Set to false to only track error requests.  Defaults to true.
+     * @var bool Set to false to only track error requests.
+     * Defaults to true. in application configuration file
      */
     public $trackAllRequests = false;
 
@@ -53,6 +54,8 @@ class AuditErrorHandler extends CErrorHandler
      * @var string
      */
     private $_rawPostData;
+
+    public $phpStormRemote = false;
 
     /**
      * Init the error handler, register a shutdown function to catch fatal errors and track the request.
@@ -110,6 +113,13 @@ class AuditErrorHandler extends CErrorHandler
      */
     public function handle($event)
     {
+        static $bHandled = false;
+        //ignore handled being called in a loop. Specially an issue during xdebug
+        if ($bHandled){
+            return;
+        }
+        $bHandled = true;
+        AuditHelper::modifyErrorEvent($this, $event);
         if ($event instanceof CExceptionEvent)
             $this->logExceptionEvent($event);
         else
