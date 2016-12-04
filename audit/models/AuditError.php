@@ -138,6 +138,16 @@ class AuditError extends AuditActiveRecord
         ));
     }
 
+    public function showTime()
+    {
+        if (@class_exists('ZTimeHelper')){
+            $vTimeStamp = ZTimeHelper::ago($this->created);
+        }
+        else{
+            $vTimeStamp = Yii::app()->format->formatDatetime($this->created);
+        }
+        return $vTimeStamp;
+    }
 
     /**
      * @return mixed

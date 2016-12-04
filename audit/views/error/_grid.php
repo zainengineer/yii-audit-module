@@ -48,6 +48,7 @@ $columns[] = array(
 $columns[] = array(
     'name' => 'file',
     'value' => '$data->getFileAlias()',
+    'type' => 'raw',
 );
 $columns[] = array(
     'name' => 'line',
@@ -55,7 +56,7 @@ $columns[] = array(
 if ($this->id != 'request') {
     $columns[] = array(
         'name' => 'created',
-        'value' => 'Yii::app()->format->formatDatetime($data->created)',
+        'value' => '$data->showTime()',
     );
 }
 
